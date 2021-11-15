@@ -17,3 +17,12 @@
 #pragma once
 
 // place overrides here
+
+// Global delay for tap dance and tap-hold keys
+#define TAPPING_TERM 200
+
+// Tap-hold keys should trigger hold key as soon another key is
+// pressed in the mean time
+#define HOLD_ON_OTHER_KEY_PRESS
+
+#define GRAVE_ESC_CTRL_OVERRIDE

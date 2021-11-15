@@ -17,9 +17,7 @@
 
 // Defines the keycodes used by our macros in process_record_user
 enum custom_keycodes {
-  QMKBEST = SAFE_RANGE,
-  QMKURL,
-  ISOAUML,
+  ISOAUML = SAFE_RANGE,
   ISOOUML,
   ISOUUML,
   ISOCOMM,
@@ -44,8 +42,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_GESC, KC_1,    KC_2,   KC_3,   KC_4,   KC_5,   KC_6,   KC_7,   KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_GRV, \
   KC_TAB,  KC_Q,    KC_W,   KC_E,   KC_R,   KC_T,   KC_Y,   KC_U,   KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_DEL, \
   KC_CAPS, KC_A,    KC_S,   KC_D,   KC_F,   KC_G,   KC_H,   KC_J,   KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT, KC_PGUP,  \
-  KC_LSFT, KC_Z,    KC_X,   KC_C,   KC_V,   KC_B,   KC_N,   KC_M,   KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, KC_UP,   KC_PGDN,           \
-  KC_LCTL, KC_LGUI, KC_LALT,                KC_SPC,                          KC_RALT, MO(2),   TG(1)/*KC_RCTL*/, KC_LEFT, KC_DOWN, KC_RGHT),
+  KC_LSFT, KC_Z,    KC_X,   KC_C,   KC_V,   KC_B,   KC_N,   KC_M,   KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT /*MT(KC_RSFT, KC_PGUP)*/, KC_UP,   KC_PGDN, \
+  KC_LCTL, KC_LGUI, KC_LALT,                KC_SPC,                          KC_RALT, MO(2),   TG(3)/*KC_RCTL*/, KC_LEFT, KC_DOWN, KC_RGHT),
 
 /* Keymap macOS layer */
 [1] = LAYOUT_65_ansi(
@@ -115,25 +113,27 @@ void send_iso(char* baseChar, char* shiftChar, bool pressed) {
     }
 }
 
+/* void send_custom(char* base, char* shifted, char* altered, char* altered_shifted) { */
+/*     mod_state = get_mods(); */
+/*     bool is_shifted = mod_state & MOD_MASK_SHIFT; */
+/*     bool is_altered = mod_state & MOD_BIT(KC_RALT); */
+/*     if (is_altered) { */
+/*         if (is_shifted) { */
+/*             send_string(altered_shifted); */
+/*         } else { */
+/*             send_string(altered); */
+/*         } */
+/*     } else if (is_shifted) { */
+/*         send_string(shifted); */
+/*     } else { */
+/*         send_string(base); */
+/*     } */
+/*     set_mods(mod_state); */
+/* } */
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   mod_state = get_mods();
   switch (keycode) {
-    case QMKBEST:
-      if (record->event.pressed) {
-        // when keycode QMKBEST is pressed
-        SEND_STRING("QMK is the best thing ever!");
-      } else {
-        // when keycode QMKBEST is released
-      }
-      break;
-    case QMKURL:
-      if (record->event.pressed) {
-        // when keycode QMKURL is pressed
-        SEND_STRING("https://qmk.fm/" SS_TAP(X_ENTER));
-      } else {
-        // when keycode QMKURL is released
-      }
-      break;
   case ISOAUML:
       send_iso("a" /* ä */, "z" /* à */, record -> event.pressed);
       break;
@@ -144,12 +144,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       send_iso("u" /* ü */, "f" /* è */, record -> event.pressed);
       break;
   case ISOCOMM:
+      /* send_custom(SS_TAP(X_COMM), SS_TAP(X_SCLN), SS_DOWN(X_LSFT) SS_TAP(X_COMM) SS_UP(X_LSFT), KC_NO); */
       if (record -> event.pressed) {
           clear_mods();
           if (mod_state & MOD_MASK_SHIFT) {
               // SHIFT = ;
               SEND_STRING(SS_TAP(X_SCLN));
-          } else if ((get_mods() & MOD_BIT(KC_RALT)) == MOD_BIT(KC_RALT)) {
+          } else if (mod_state & MOD_BIT(KC_RALT)) {
               // ALTGR = <
               SEND_STRING(SS_DOWN(X_LSFT) SS_TAP(X_COMM) SS_UP(X_LSFT));
           } else {
@@ -165,7 +166,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (mod_state & MOD_MASK_SHIFT) {
               // SHIFT = :
               SEND_STRING(SS_DOWN(X_LSFT) SS_TAP(X_SCLN) SS_UP(X_LSFT));
-          } else if ((get_mods() & MOD_BIT(KC_RALT)) == MOD_BIT(KC_RALT)) {
+          } else if (mod_state & MOD_BIT(KC_RALT)) {
               // ALTGR = >
               SEND_STRING(SS_DOWN(X_LSFT) SS_TAP(X_DOT) SS_UP(X_LSFT));
           } else {
