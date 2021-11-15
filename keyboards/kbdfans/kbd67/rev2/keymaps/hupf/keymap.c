@@ -21,8 +21,9 @@ enum custom_keycodes {
   QMKURL,
   ISOAUML,
   ISOOUML,
-  ISOUUML
-
+  ISOUUML,
+  ISOCOMM,
+  ISODOT
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -86,7 +87,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
   _______, _______, _______, _______, _______, _______, KC_Z, _______, _______, _______, _______, ISOUUML, _______, _______, _______, \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, ISOOUML, ISOAUML,          _______, _______, \
-  _______, KC_Y, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+  _______, KC_Y, _______, _______, _______, _______, _______, _______, ISOCOMM, ISODOT, _______, _______, _______, _______, \
   _______, _______, _______,                        _______,                       _______, _______, _______, _______, _______, _______),
 
 };
@@ -141,6 +142,38 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       break;
   case ISOUUML:
       send_iso("u" /* ü */, "f" /* è */, record -> event.pressed);
+      break;
+  case ISOCOMM:
+      if (record -> event.pressed) {
+          clear_mods();
+          if (mod_state & MOD_MASK_SHIFT) {
+              // SHIFT = ;
+              SEND_STRING(SS_TAP(X_SCLN));
+          } else if ((get_mods() & MOD_BIT(KC_RALT)) == MOD_BIT(KC_RALT)) {
+              // ALTGR = <
+              SEND_STRING(SS_DOWN(X_LSFT) SS_TAP(X_COMM) SS_UP(X_LSFT));
+          } else {
+              // DEFAULT = ,
+              SEND_STRING(SS_TAP(X_COMM));
+          }
+          set_mods(mod_state);
+      }
+      break;
+  case ISODOT:
+      if (record -> event.pressed) {
+          clear_mods();
+          if (mod_state & MOD_MASK_SHIFT) {
+              // SHIFT = :
+              SEND_STRING(SS_DOWN(X_LSFT) SS_TAP(X_SCLN) SS_UP(X_LSFT));
+          } else if ((get_mods() & MOD_BIT(KC_RALT)) == MOD_BIT(KC_RALT)) {
+              // ALTGR = >
+              SEND_STRING(SS_DOWN(X_LSFT) SS_TAP(X_DOT) SS_UP(X_LSFT));
+          } else {
+              // DEFAULT = .
+              SEND_STRING(SS_TAP(X_DOT));
+          }
+          set_mods(mod_state);
+      }
       break;
   }
   return true;
