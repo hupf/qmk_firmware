@@ -1,4 +1,5 @@
 /* Copyright 2018 'mechmerlin'
+ * Copyright 2021 hupf
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,11 +18,12 @@
 
 // Defines the keycodes used by our macros in process_record_user
 enum custom_keycodes {
-  ISOAUML = SAFE_RANGE,
-  ISOOUML,
-  ISOUUML,
-  ISOCOMM,
-  ISODOT
+  ISO_AUML = SAFE_RANGE,
+  ISO_OUML,
+  ISO_UUML,
+  ISO_COMM,
+  ISO_DOT,
+  ISO_2
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -40,9 +42,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    */
 [0] = LAYOUT_65_ansi(
   KC_GESC, KC_1,    KC_2,   KC_3,   KC_4,   KC_5,   KC_6,   KC_7,   KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_GRV, \
-  KC_TAB,  KC_Q,    KC_W,   KC_E,   KC_R,   KC_T,   KC_Y,   KC_U,   KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_DEL, \
+  KC_TAB,  KC_Q,    KC_W,   KC_E,   KC_R,   KC_T,   KC_Z,   KC_U,   KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_DEL, \
   KC_CAPS, KC_A,    KC_S,   KC_D,   KC_F,   KC_G,   KC_H,   KC_J,   KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT, KC_PGUP,  \
-  KC_LSFT, KC_Z,    KC_X,   KC_C,   KC_V,   KC_B,   KC_N,   KC_M,   KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT /*MT(KC_RSFT, KC_PGUP)*/, KC_UP,   KC_PGDN, \
+  KC_LSFT, KC_Y,    KC_X,   KC_C,   KC_V,   KC_B,   KC_N,   KC_M,   KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT /*MT(KC_RSFT, KC_PGUP)*/, KC_UP,   KC_PGDN, \
   KC_LCTL, KC_LGUI, KC_LALT,                KC_SPC,                          KC_RALT, MO(2),   TG(3)/*KC_RCTL*/, KC_LEFT, KC_DOWN, KC_RGHT),
 
 /* Keymap macOS layer */
@@ -75,106 +77,107 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    */
 [2] = LAYOUT_65_ansi(
    KC_GRV,  KC_F1,  KC_F2,  KC_F3,  KC_F4,  KC_F5,  KC_F6,  KC_F7,  KC_F8,  KC_F9, KC_F10, KC_F11, KC_F12,          KC_DEL,KC_INS, \
-   _______,_______,  KC_UP,_______,_______,_______,_______,TG(3),KC_PSCR,KC_SLCK,KC_PAUS,  KC_UP,_______,     _______,_______,   \
-      _______,KC_LEFT,KC_DOWN,KC_RGHT,_______,_______,_______,_______,KC_HOME,KC_PGUP,KC_LEFT,KC_RGHT,            _______,_______, \
-           _______,_______,_______,_______,_______,_______,_______,TG(1), KC_END,KC_PGDN,KC_DOWN,       _______,KC_PGUP,_______, \
+   _______,_______,  KC_UP,_______,_______,_______,_______,_______,KC_PSCR,KC_SLCK,KC_PAUS,  KC_UP,_______,     _______,_______,   \
+      _______,KC_LEFT,KC_DOWN,KC_RGHT,_______,_______,_______,_______,KC_HOME,KC_PGUP,KC_LEFT,KC_RGHT,            _______,KC_HOME, \
+   _______,_______,_______,_______,_______,_______,TG(4),TG(1), KC_END,KC_PGDN,KC_DOWN,       _______,KC_PGUP,KC_END, \
     _______,  _______,  _______,                     _______,                     _______,_______,_______,KC_HOME,KC_PGDN, KC_END),
 
 /* Keymap ISO layer */
 [3] = LAYOUT_65_ansi(
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______, KC_Z, _______, _______, _______, _______, ISOUUML, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, ISOOUML, ISOAUML,          _______, _______, \
-  _______, KC_Y, _______, _______, _______, _______, _______, _______, ISOCOMM, ISODOT, _______, _______, _______, _______, \
+  _______, _______, ISO_2, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______, KC_Z, _______, _______, _______, _______, ISO_UUML, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, ISO_OUML, ISO_AUML,          _______, _______, \
+  _______, KC_Y, _______, _______, _______, _______, _______, _______, ISO_COMM, ISO_DOT, _______, _______, _______, _______, \
+  _______, _______, _______,                        _______,                       _______, _______, _______, _______, _______, _______),
+
+/* Numpad layer */
+[4] = LAYOUT_65_ansi(
+  _______, _______, _______, _______, _______, _______, _______, KC_KP_7, KC_KP_8, KC_KP_9, KC_KP_PLUS, KC_KP_MINUS, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______, _______, KC_KP_4, KC_KP_5, KC_KP_6, KC_KP_ASTERISK, KC_KP_SLASH, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______, _______, KC_KP_1, KC_KP_2, KC_KP_3, KC_KP_EQUAL, _______,          _______, _______, \
+  _______, _______, _______, _______, _______, _______, _______, KC_KP_0, KC_KP_0, KC_KP_DOT, KC_KP_ENTER, _______, _______, _______, \
   _______, _______, _______,                        _______,                       _______, _______, _______, _______, _______, _______),
 
 };
 
-uint8_t mod_state;\
-
-void send_iso(char* baseChar, char* shiftChar, bool pressed) {
-    if (pressed) {
-        mod_state = get_mods();
-
-        char* c;
-        if (mod_state & MOD_MASK_SHIFT) {
-            c = shiftChar;
-        } else {
-            c = baseChar;
-        }
+void send_custom(keyrecord_t *record, char* base, char* shifted, char* altered, char* altered_shifted) {
+    if (record->event.pressed) {
+        uint8_t mod_state = get_mods();
+        bool shift = mod_state & MOD_MASK_SHIFT;
+        bool alt = mod_state & MOD_BIT(KC_RALT);
 
         clear_mods();
-
-        SEND_STRING(SS_DOWN(X_RALT));
-        send_string(c);
-        SEND_STRING(SS_UP(X_RALT));
-
+        if (alt) {
+            if (shift) {
+                send_string(altered_shifted);
+            } else {
+                send_string(altered);
+            }
+        } else if (shift) {
+            send_string(shifted);
+        } else {
+            send_string(base);
+        }
         set_mods(mod_state);
     }
 }
 
-/* void send_custom(char* base, char* shifted, char* altered, char* altered_shifted) { */
-/*     mod_state = get_mods(); */
-/*     bool is_shifted = mod_state & MOD_MASK_SHIFT; */
-/*     bool is_altered = mod_state & MOD_BIT(KC_RALT); */
-/*     if (is_altered) { */
-/*         if (is_shifted) { */
-/*             send_string(altered_shifted); */
-/*         } else { */
-/*             send_string(altered); */
-/*         } */
-/*     } else if (is_shifted) { */
-/*         send_string(shifted); */
-/*     } else { */
-/*         send_string(base); */
-/*     } */
-/*     set_mods(mod_state); */
-/* } */
-
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  mod_state = get_mods();
   switch (keycode) {
-  case ISOAUML:
-      send_iso("a" /* ä */, "z" /* à */, record -> event.pressed);
+  case ISO_AUML:
+      send_custom(
+        record,
+        SS_DOWN(X_RALT) SS_TAP(X_A) SS_UP(X_RALT), // ä
+        SS_DOWN(X_RALT) SS_TAP(X_Z) SS_UP(X_RALT), // à
+        SS_TAP(X_QUOT), // '
+        SS_DOWN(X_LSFT) SS_TAP(X_QUOT) SS_UP(X_LSFT) // "
+      );
       break;
-  case ISOOUML:
-      send_iso("o" /* ö */, "g" /* é */, record -> event.pressed);
+  case ISO_OUML:
+      send_custom(
+        record,
+        SS_DOWN(X_RALT) SS_TAP(X_O) SS_UP(X_RALT), // ö
+        SS_DOWN(X_RALT) SS_TAP(X_G) SS_UP(X_RALT), // é
+        SS_TAP(X_SCLN), // ;
+        SS_DOWN(X_LSFT) SS_TAP(X_SCLN) SS_UP(X_LSFT) // :
+      );
       break;
-  case ISOUUML:
-      send_iso("u" /* ü */, "f" /* è */, record -> event.pressed);
+  case ISO_UUML:
+      /* send_iso("u" /\* ü *\/, "f" /\* è *\/, record -> event.pressed); */
+      send_custom(
+        record,
+        SS_DOWN(X_RALT) SS_TAP(X_U) SS_UP(X_RALT), // ü
+        SS_DOWN(X_RALT) SS_TAP(X_F) SS_UP(X_RALT), // è
+        KC_NO,
+        KC_NO
+      );
       break;
-  case ISOCOMM:
-      /* send_custom(SS_TAP(X_COMM), SS_TAP(X_SCLN), SS_DOWN(X_LSFT) SS_TAP(X_COMM) SS_UP(X_LSFT), KC_NO); */
-      if (record -> event.pressed) {
-          clear_mods();
-          if (mod_state & MOD_MASK_SHIFT) {
-              // SHIFT = ;
-              SEND_STRING(SS_TAP(X_SCLN));
-          } else if (mod_state & MOD_BIT(KC_RALT)) {
-              // ALTGR = <
-              SEND_STRING(SS_DOWN(X_LSFT) SS_TAP(X_COMM) SS_UP(X_LSFT));
-          } else {
-              // DEFAULT = ,
-              SEND_STRING(SS_TAP(X_COMM));
-          }
-          set_mods(mod_state);
-      }
+  case ISO_COMM:
+      send_custom(
+        record,
+        SS_TAP(X_COMM), // ,
+        SS_TAP(X_SCLN), // ;
+        SS_DOWN(X_LSFT) SS_TAP(X_COMM) SS_UP(X_LSFT), // <
+        KC_NO
+      );
       break;
-  case ISODOT:
-      if (record -> event.pressed) {
-          clear_mods();
-          if (mod_state & MOD_MASK_SHIFT) {
-              // SHIFT = :
-              SEND_STRING(SS_DOWN(X_LSFT) SS_TAP(X_SCLN) SS_UP(X_LSFT));
-          } else if (mod_state & MOD_BIT(KC_RALT)) {
-              // ALTGR = >
-              SEND_STRING(SS_DOWN(X_LSFT) SS_TAP(X_DOT) SS_UP(X_LSFT));
-          } else {
-              // DEFAULT = .
-              SEND_STRING(SS_TAP(X_DOT));
-          }
-          set_mods(mod_state);
-      }
+  case ISO_DOT:
+      send_custom(
+        record,
+        SS_TAP(X_DOT), // .
+        SS_DOWN(X_LSFT) SS_TAP(X_SCLN) SS_UP(X_LSFT), // :
+        SS_DOWN(X_LSFT) SS_TAP(X_DOT) SS_UP(X_LSFT), // >
+        KC_NO
+      );
+      break;
+  case ISO_2:
+      send_custom(
+        record,
+        SS_TAP(X_2), // 2
+        SS_DOWN(X_LSFT) SS_TAP(X_QUOT) SS_UP(X_LSFT), // "
+        SS_DOWN(X_LSFT) SS_TAP(X_2) SS_UP(X_LSFT), // @
+        SS_TAP(X_QUOT) // '
+      );
       break;
   }
   return true;
