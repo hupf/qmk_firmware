@@ -23,7 +23,10 @@ enum custom_keycodes {
   ISO_UUML,
   ISO_COMM,
   ISO_DOT,
-  ISO_2
+  ISO_LBRC,
+  ISO_RBRC,
+  ISO_2,
+  ISO_MINS
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -84,8 +87,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Keymap ISO layer */
 [3] = LAYOUT_65_ansi(
-  _______, _______, ISO_2, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______, KC_Z, _______, _______, _______, _______, ISO_UUML, _______, _______, _______, \
+  _______, _______, ISO_2, _______, _______, _______, _______, _______, _______, _______, _______, ISO_MINS, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______, KC_Z, _______, _______, _______, _______, ISO_UUML, ISO_RBRC, _______, _______, \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, ISO_OUML, ISO_AUML,          _______, _______, \
   _______, KC_Y, _______, _______, _______, _______, _______, _______, ISO_COMM, ISO_DOT, _______, _______, _______, _______, \
   _______, _______, _______,                        _______,                       _______, _______, _______, _______, _______, _______),
@@ -96,7 +99,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   _______, _______, _______, _______, _______, _______, _______, KC_KP_4, KC_KP_5, KC_KP_6, KC_KP_ASTERISK, KC_KP_SLASH, _______, _______, _______, \
   _______, _______, _______, _______, _______, _______, _______, KC_KP_1, KC_KP_2, KC_KP_3, KC_KP_EQUAL, _______,          _______, _______, \
   _______, _______, _______, _______, _______, _______, _______, KC_KP_0, KC_KP_0, KC_KP_DOT, KC_KP_ENTER, _______, _______, _______, \
-  _______, _______, _______,                        _______,                       _______, _______, _______, _______, _______, _______),
+  _______, _______, _______,                        _______,                       _______, TG(4), _______, _______, _______, _______),
 
 };
 
@@ -127,29 +130,37 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   case ISO_AUML:
       send_custom(
         record,
-        SS_DOWN(X_RALT) SS_TAP(X_A) SS_UP(X_RALT), // ä
-        SS_DOWN(X_RALT) SS_TAP(X_Z) SS_UP(X_RALT), // à
-        SS_TAP(X_QUOT), // '
-        SS_DOWN(X_LSFT) SS_TAP(X_QUOT) SS_UP(X_LSFT) // "
+        SS_RALT(SS_TAP(X_A)), // ä
+        SS_RALT(SS_TAP(X_Z)), // à
+        SS_RALT(SS_TAP(X_QUOT)), // ´ (default)
+        SS_DOWN(X_RALT) SS_DOWN(X_LSFT) SS_TAP(X_QUOT) SS_UP(X_RALT) SS_UP(X_LSFT) // ¨ (default)
       );
       break;
   case ISO_OUML:
       send_custom(
         record,
-        SS_DOWN(X_RALT) SS_TAP(X_O) SS_UP(X_RALT), // ö
-        SS_DOWN(X_RALT) SS_TAP(X_G) SS_UP(X_RALT), // é
-        SS_TAP(X_SCLN), // ;
-        SS_DOWN(X_LSFT) SS_TAP(X_SCLN) SS_UP(X_LSFT) // :
+        SS_RALT(SS_TAP(X_O)), // ö
+        SS_RALT(SS_TAP(X_G)), // é
+        SS_RALT(SS_TAP(X_SCLN)), // ° (default)
+        SS_DOWN(X_RALT) SS_DOWN(X_LSFT) SS_TAP(X_SCLN) SS_UP(X_RALT) SS_UP(X_LSFT) // · (default)
       );
       break;
   case ISO_UUML:
-      /* send_iso("u" /\* ü *\/, "f" /\* è *\/, record -> event.pressed); */
       send_custom(
         record,
-        SS_DOWN(X_RALT) SS_TAP(X_U) SS_UP(X_RALT), // ü
-        SS_DOWN(X_RALT) SS_TAP(X_F) SS_UP(X_RALT), // è
-        KC_NO,
-        KC_NO
+        SS_RALT(SS_TAP(X_U)), // ü
+        SS_RALT(SS_TAP(X_F)), // è
+        SS_TAP(X_LBRC), // [
+        SS_LSFT(SS_TAP(X_LBRC)) // {
+      );
+      break;
+  case ISO_RBRC:
+      send_custom(
+        record,
+        SS_TAP(X_RBRC), // ] (default)
+        SS_LSFT(SS_TAP(X_RBRC)), // } (default)
+        SS_TAP(X_RBRC), // ]
+        SS_LSFT(SS_TAP(X_RBRC)) // }
       );
       break;
   case ISO_COMM:
@@ -157,26 +168,35 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         record,
         SS_TAP(X_COMM), // ,
         SS_TAP(X_SCLN), // ;
-        SS_DOWN(X_LSFT) SS_TAP(X_COMM) SS_UP(X_LSFT), // <
-        KC_NO
+        SS_LSFT(SS_TAP(X_COMM)), // <
+        SS_RALT(SS_TAP(X_LBRC)) // «
       );
       break;
   case ISO_DOT:
       send_custom(
         record,
         SS_TAP(X_DOT), // .
-        SS_DOWN(X_LSFT) SS_TAP(X_SCLN) SS_UP(X_LSFT), // :
-        SS_DOWN(X_LSFT) SS_TAP(X_DOT) SS_UP(X_LSFT), // >
-        KC_NO
+        SS_LSFT(SS_TAP(X_SCLN)), // :
+        SS_LSFT(SS_TAP(X_DOT)), // >
+        SS_RALT(SS_TAP(X_RBRC)) // »
       );
       break;
   case ISO_2:
       send_custom(
         record,
-        SS_TAP(X_2), // 2
-        SS_DOWN(X_LSFT) SS_TAP(X_QUOT) SS_UP(X_LSFT), // "
-        SS_DOWN(X_LSFT) SS_TAP(X_2) SS_UP(X_LSFT), // @
-        SS_TAP(X_QUOT) // '
+        SS_TAP(X_2), // 2 (default)
+        SS_LSFT(SS_TAP(X_QUOT)), // "
+        SS_LSFT(SS_TAP(X_2)), // @
+        KC_NO
+      );
+      break;
+  case ISO_MINS:
+      send_custom(
+        record,
+        SS_TAP(X_MINS), // - (default)
+        SS_LSFT(SS_TAP(X_MINS)), // _ (default)
+        SS_TAP(X_QUOT), // '
+        KC_NO
       );
       break;
   }
